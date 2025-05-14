@@ -3,11 +3,11 @@
   <title>Silence</title>
   
   <subtitle>echo</subtitle>
-  <link href="https://silence4allen.github.io/echo-silence.github.io/atom.xml" rel="self"/>
+  <link href="https://silence4allen.github.io/echo-silence/atom.xml" rel="self"/>
   
-  <link href="https://silence4allen.github.io/echo-silence.github.io/"/>
+  <link href="https://silence4allen.github.io/echo-silence/"/>
   <updated>2025-05-14T05:48:13.248Z</updated>
-  <id>https://silence4allen.github.io/echo-silence.github.io/</id>
+  <id>https://silence4allen.github.io/echo-silence/</id>
   
   <author>
     <name>Allen</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>Hello World</title>
-    <link href="https://silence4allen.github.io/echo-silence.github.io/2025/05/14/hello-world/"/>
-    <id>https://silence4allen.github.io/echo-silence.github.io/2025/05/14/hello-world/</id>
+    <link href="https://silence4allen.github.io/echo-silence/2025/05/14/hello-world/"/>
+    <id>https://silence4allen.github.io/echo-silence/2025/05/14/hello-world/</id>
     <published>2025-05-14T05:48:13.248Z</published>
     <updated>2025-05-14T05:48:13.248Z</updated>
     
