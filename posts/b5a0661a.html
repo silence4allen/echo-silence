@@ -21,22 +21,19 @@
   <meta name="author" content="极客奶爸">
   <meta name="keywords" content="Python|AI|游戏|生活">
   
-    <meta name="description" content="本文介绍了如何安装和配置 Zsh 终端及其管理框架 Oh My Zsh。首先，通过命令安装 Zsh 并设置为默认终端。接着，安装 Oh My Zsh 并推荐了 Powerlevel10k 主题，详细说明了如何安装所需字体和主题，并修改配置文件。此外，还推荐了其他主题和实用插件，如语法高亮、自动补全等，并提供了插件优化技巧。最后，文章还介绍了历史命令优化、别名设置、颜色支持等优化技巧，并提供了恢复">
+    <meta name="description" content="本文详细介绍了在Ubuntu 24.04系统上安装和配置Docker的步骤，包括添加Docker仓库、安装Docker及Docker Compose、验证安装等。此外，还提供了配置Docker镜像加速器的方法，以提升镜像拉取速度。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="让Ubuntu终端效率翻倍！Zsh配置+高颜值主题+实用插件指南">
-<meta property="og:url" content="https://silence4allen.github.io/echo-silence/posts/894a47dd.html">
+<meta property="og:title" content="Ubuntu 24.04 完整Docker安装指南：从零配置到实战命令大全">
+<meta property="og:url" content="https://silence4allen.github.io/echo-silence/posts/b5a0661a.html">
 <meta property="og:site_name" content="静夜思·Code">
-<meta property="og:description" content="本文介绍了如何安装和配置 Zsh 终端及其管理框架 Oh My Zsh。首先，通过命令安装 Zsh 并设置为默认终端。接着，安装 Oh My Zsh 并推荐了 Powerlevel10k 主题，详细说明了如何安装所需字体和主题，并修改配置文件。此外，还推荐了其他主题和实用插件，如语法高亮、自动补全等，并提供了插件优化技巧。最后，文章还介绍了历史命令优化、别名设置、颜色支持等优化技巧，并提供了恢复">
+<meta property="og:description" content="本文详细介绍了在Ubuntu 24.04系统上安装和配置Docker的步骤，包括添加Docker仓库、安装Docker及Docker Compose、验证安装等。此外，还提供了配置Docker镜像加速器的方法，以提升镜像拉取速度。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://silence4allen.github.io/echo-silence/custom/img/cover/ubuntu.jpeg">
-<meta property="article:published_time" content="2025-05-12T03:34:55.000Z">
-<meta property="article:modified_time" content="2025-05-16T07:41:28.877Z">
+<meta property="article:published_time" content="2025-05-16T10:23:19.000Z">
+<meta property="article:modified_time" content="2025-05-16T10:34:31.666Z">
 <meta property="article:author" content="极客奶爸">
-<meta property="article:tag" content="美化">
-<meta property="article:tag" content="Zsh">
-<meta property="article:tag" content="插件">
+<meta property="article:tag" content="工具">
+<meta property="article:tag" content="Docker">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://silence4allen.github.io/echo-silence/custom/img/cover/ubuntu.jpeg">
   
   
     <meta name="referrer" content="no-referrer-when-downgrade">
@@ -44,7 +41,7 @@
   
     <meta name="key" content="value">
   
-  <title>让Ubuntu终端效率翻倍！Zsh配置+高颜值主题+实用插件指南 - 静夜思·Code</title>
+  <title>Ubuntu 24.04 完整Docker安装指南：从零配置到实战命令大全 - 静夜思·Code</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -250,7 +247,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="让Ubuntu终端效率翻倍！Zsh配置+高颜值主题+实用插件指南"></span>
+            <span id="subtitle" data-typed-text="Ubuntu 24.04 完整Docker安装指南：从零配置到实战命令大全"></span>
           
         </div>
 
@@ -261,8 +258,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-05-12 11:34" pubdate>
-          2025年5月12日 中午
+        <time datetime="2025-05-16 18:23" pubdate>
+          2025年5月16日 晚上
         </time>
       </span>
     
@@ -273,7 +270,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          786 字
+          905 字
         
       </span>
     
@@ -284,7 +281,7 @@
         
         
         
-          7 分钟
+          8 分钟
         
       </span>
     
@@ -373,17 +370,17 @@
     
     
     <div class="category-sub row nomargin-x">
-      <a class="category-subitem collapsed
+      <a class="category-subitem 
           list-group-item category-item-action col-10 col-md-11 col-xm-11" title="tool"
         id="heading-39ab32c5aeb56c9f5ae17f073ce31023" role="tab" data-toggle="collapse" href="#collapse-39ab32c5aeb56c9f5ae17f073ce31023"
-        aria-expanded="false"
+        aria-expanded="true"
       >
         tool
         <span class="list-group-count">(4)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse " id="collapse-39ab32c5aeb56c9f5ae17f073ce31023"
+      <div class="category-collapse collapse show" id="collapse-39ab32c5aeb56c9f5ae17f073ce31023"
            role="tabpanel" aria-labelledby="heading-39ab32c5aeb56c9f5ae17f073ce31023">
         
         
@@ -395,7 +392,7 @@
       
         <a href="/echo-silence/posts/b5a0661a.html" title="Ubuntu 24.04 完整Docker安装指南：从零配置到实战命令大全"
            class="list-group-item list-group-item-action
-           ">
+           active">
           <span class="category-post">Ubuntu 24.04 完整Docker安装指南：从零配置到实战命令大全</span>
         </a>
       
@@ -437,17 +434,17 @@
     
     
     <div class="category-sub row nomargin-x">
-      <a class="category-subitem 
+      <a class="category-subitem collapsed
           list-group-item category-item-action col-10 col-md-11 col-xm-11" title="ubuntu"
         id="heading-1d41c853af58d3a7ae54990ce29417d8" role="tab" data-toggle="collapse" href="#collapse-1d41c853af58d3a7ae54990ce29417d8"
-        aria-expanded="true"
+        aria-expanded="false"
       >
         ubuntu
         <span class="list-group-count">(4)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse show" id="collapse-1d41c853af58d3a7ae54990ce29417d8"
+      <div class="category-collapse collapse " id="collapse-1d41c853af58d3a7ae54990ce29417d8"
            role="tabpanel" aria-labelledby="heading-1d41c853af58d3a7ae54990ce29417d8">
         
         
@@ -468,7 +465,7 @@
       
         <a href="/echo-silence/posts/894a47dd.html" title="让Ubuntu终端效率翻倍！Zsh配置+高颜值主题+实用插件指南"
            class="list-group-item list-group-item-action
-           active">
+           ">
           <span class="category-post">让Ubuntu终端效率翻倍！Zsh配置+高颜值主题+实用插件指南</span>
         </a>
       
@@ -513,77 +510,229 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">让Ubuntu终端效率翻倍！Zsh配置+高颜值主题+实用插件指南</h1>
+            <h1 id="seo-header">Ubuntu 24.04 完整Docker安装指南：从零配置到实战命令大全</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="一、安装-Zsh"><a href="#一、安装-Zsh" class="headerlink" title="一、安装 Zsh"></a>一、安装 Zsh</h2><p>在 bash 中执行以下命令：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 安装</span><br><span class="hljs-built_in">sudo</span> apt update &amp;&amp; <span class="hljs-built_in">sudo</span> apt install zsh -y<br><span class="hljs-comment"># 设置为默认终端</span><br>chsh -s $(<span class="hljs-built_in">which</span> zsh)<br></code></pre></td></tr></table></figure>
+                <h2 id="1-安装-Docker"><a href="#1-安装-Docker" class="headerlink" title="1. 安装 Docker"></a>1. 安装 Docker</h2><blockquote>
+<p><a target="_blank" rel="noopener" href="https://docs.docker.com/engine/install/">官方安装文档</a></p>
+</blockquote>
+<p>以下以 <code>Ubuntu24.04</code> 为例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 添加 Docker 仓库的 GPG 密钥</span><br><span class="hljs-built_in">sudo</span> apt-get update<br><span class="hljs-built_in">sudo</span> apt-get install ca-certificates curl<br><span class="hljs-built_in">sudo</span> install -m 0755 -d /etc/apt/keyrings<br><span class="hljs-built_in">sudo</span> curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc<br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">chmod</span> a+r /etc/apt/keyrings/docker.asc<br><br><span class="hljs-comment"># 添加 Docker 仓库到 apt 源</span><br><span class="hljs-built_in">echo</span> \<br>  <span class="hljs-string">&quot;deb [arch=<span class="hljs-subst">$(dpkg --print-architecture)</span> signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu <span class="hljs-subst">$(. /etc/os-release &amp;&amp; echo <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;UBUNTU_CODENAME:-<span class="hljs-variable">$VERSION_CODENAME</span>&#125;</span>&quot;</span>)</span> stable&quot;</span> | \<br>  <span class="hljs-built_in">sudo</span> <span class="hljs-built_in">tee</span> /etc/apt/sources.list.d/docker.list &gt; /dev/null<br><br><span class="hljs-built_in">sudo</span> apt-get update<br><br><span class="hljs-comment"># 安装 Docker 以及 Docker Compose</span><br><span class="hljs-built_in">sudo</span> apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin<br><br><span class="hljs-comment"># 验证安装</span><br><span class="hljs-comment"># 可能出现以下提示，需要先配置 Docker 镜像加速器</span><br><span class="hljs-comment"># Unable to find image &#x27;hello-world:latest&#x27; locally</span><br><span class="hljs-comment"># docker: Error response from daemon: Get &quot;https://registry-1.docker.io/v2/&quot;: net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)</span><br><span class="hljs-built_in">sudo</span> docker run hello-world<br></code></pre></td></tr></table></figure>
 
-<p>重启系统或者重新登陆后生效</p>
-<h2 id="二、安装-Oh-My-Zsh-管理框架"><a href="#二、安装-Oh-My-Zsh-管理框架" class="headerlink" title="二、安装 Oh My Zsh(管理框架)"></a>二、安装 Oh My Zsh(管理框架)</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sh -c <span class="hljs-string">&quot;<span class="hljs-subst">$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)</span>&quot;</span><br></code></pre></td></tr></table></figure>
+<h2 id="2-配置-Docker-镜像加速器"><a href="#2-配置-Docker-镜像加速器" class="headerlink" title="2. 配置 Docker 镜像加速器"></a>2. 配置 Docker 镜像加速器</h2><h3 id="2-1-配置-Docker-镜像源"><a href="#2-1-配置-Docker-镜像源" class="headerlink" title="2.1 配置 Docker 镜像源"></a>2.1 配置 Docker 镜像源</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">tee</span> /etc/docker/daemon.json &lt;&lt;-<span class="hljs-string">&#x27;EOF&#x27;</span><br>&#123;<br>    <span class="hljs-string">&quot;registry-mirrors&quot;</span>: [<br>        <span class="hljs-string">&quot;https://docker.m.daocloud.io&quot;</span>,<br>        <span class="hljs-string">&quot;https://mirror.baidubce.com&quot;</span>,<br>        <span class="hljs-string">&quot;http://hub-mirror.c.163.com&quot;</span>,<br>        <span class="hljs-string">&quot;https://docker.mirrors.ustc.edu.cn&quot;</span>,<br>        <span class="hljs-string">&quot;https://registry.docker-cn.com&quot;</span><br>    ],<br>    <span class="hljs-string">&quot;log-driver&quot;</span>: <span class="hljs-string">&quot;json-file&quot;</span>,<br>    <span class="hljs-string">&quot;log-opts&quot;</span>: &#123;<br>        <span class="hljs-string">&quot;max-size&quot;</span>: <span class="hljs-string">&quot;10m&quot;</span>,<br>        <span class="hljs-string">&quot;max-file&quot;</span>: <span class="hljs-string">&quot;3&quot;</span><br>    &#125;<br>&#125;<br>EOF<br></code></pre></td></tr></table></figure>
 
-<h2 id="三、主题推荐"><a href="#三、主题推荐" class="headerlink" title="三、主题推荐"></a>三、主题推荐</h2><h3 id="1-安装字体"><a href="#1-安装字体" class="headerlink" title="1. 安装字体"></a>1. 安装字体</h3><p>安装 <a target="_blank" rel="noopener" href="https://github.com/romkatv/powerlevel10k?tab=readme-ov-file#meslo-nerd-font-patched-for-powerlevel10k">Powerlevel10k</a><br>，需要预先下载主题所需字体</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 下载安装所需字体</span><br>wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf<br>wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf<br>wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf<br>wget https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf<br></code></pre></td></tr></table></figure>
-
-<p>双击下载的字体并安装，在终端–配置文件首选项–配置文件（默认配置）–自定义字体中，选择“MesloLGS NF Regular”或者“MesloLGS NF”<br>安装完成后刷新字体缓存</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> fc-cache -fv<br></code></pre></td></tr></table></figure>
-
-<h3 id="2-安装主题"><a href="#2-安装主题" class="headerlink" title="2. 安装主题"></a>2. 安装主题</h3><p>推荐 <a target="_blank" rel="noopener" href="https://github.com/romkatv/powerlevel10k.git">Powerlevel10k</a> 主题</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> --depth=1 https://github.com/romkatv/powerlevel10k.git <span class="hljs-variable">$&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;</span>/themes/powerlevel10k<br></code></pre></td></tr></table></figure>
-
-<h3 id="3-修改配置文件"><a href="#3-修改配置文件" class="headerlink" title="3. 修改配置文件"></a>3. 修改配置文件</h3><p>在 <code>~/.zshrc</code> 文件中将主题设置为 Powerlevel10k</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">ZSH_THEME=<span class="hljs-string">&quot;powerlevel10k/powerlevel10k&quot;</span><br></code></pre></td></tr></table></figure>
-
-<h3 id="4-重新加载配置后会自动运行配置向导"><a href="#4-重新加载配置后会自动运行配置向导" class="headerlink" title="4. 重新加载配置后会自动运行配置向导"></a>4. 重新加载配置后会自动运行配置向导</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">source</span> ~/.zshrc<br></code></pre></td></tr></table></figure>
-
-<p>应该会自动弹出<code>powerlevel10k</code>的主题设置，如果未弹出，输入<code>p10k configure</code>即可手动进入设置页面，后续修改也可使用<br><code>p10k configure</code>进入修改</p>
-<h3 id="5-其他主题推荐"><a href="#5-其他主题推荐" class="headerlink" title="5. 其他主题推荐"></a>5. 其他主题推荐</h3><ul>
-<li><a target="_blank" rel="noopener" href="https://github.com/spaceship-prompt/spaceship-prompt">Spaceship</a>:前端&#x2F;全栈开发</li>
-<li><a target="_blank" rel="noopener" href="https://github.com/starship/starship">Starship</a>:多 Shell 环境</li>
-<li><a target="_blank" rel="noopener" href="https://github.com/sindresorhus/pure">Pure</a>:追求纯净体验</li>
-<li><a target="_blank" rel="noopener" href="https://github.com/agnoster/agnoster-zsh-theme">Agnoster</a>:服务器管理</li>
-<li><a target="_blank" rel="noopener" href="https://github.com/powerline/powerline">Powerline</a>:与 Vim 的 powerline 状态栏风格统一</li>
-<li><a target="_blank" rel="noopener" href="https://github.com/dracula/zsh">Dracula</a>:长时间编码</li>
+<p>注：</p>
+<ul>
+<li><code>log-driver</code>：指定 <code>Docker</code> 容器使用 <code>Json</code> 文件作为日志存储格式</li>
+<li><code>log-opts</code>：指定日志文件大小和数量，超过限制时自动清理<ul>
+<li><code>max-size</code>：单个日志文件最大大小（支持 k（千字节）、m（兆字节）、g（千兆字节））</li>
+<li><code>max-file</code>：保留的日志文件数量</li>
 </ul>
-<h2 id="四、推荐插件安装"><a href="#四、推荐插件安装" class="headerlink" title="四、推荐插件安装"></a>四、推荐插件安装</h2><h3 id="1-语法高亮"><a href="#1-语法高亮" class="headerlink" title="1. 语法高亮"></a>1. 语法高亮</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> apt install zsh-syntax-highlighting -y<br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh&quot;</span> &gt;&gt; ~/.zshrc<br></code></pre></td></tr></table></figure>
-
-<h3 id="2-自动补全"><a href="#2-自动补全" class="headerlink" title="2. 自动补全"></a>2. 自动补全</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> apt install zsh-autosuggestions -y<br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh&quot;</span> &gt;&gt; ~/.zshrc<br></code></pre></td></tr></table></figure>
-
-<h3 id="3-其他实用插件"><a href="#3-其他实用插件" class="headerlink" title="3. 其他实用插件"></a>3. 其他实用插件</h3><ul>
-<li><p><a target="_blank" rel="noopener" href="https://github.com/jeffreytse/zsh-vi-mode">zsh-vi-mode</a>:将 Zsh 变成完整的 Vi&#x2F;Vim 编辑模式</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/jeffreytse/zsh-vi-mode <span class="hljs-variable">$&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;</span>/plugins/zsh-vi-mode<br></code></pre></td></tr></table></figure>
 </li>
-<li><p><a target="_blank" rel="noopener" href="https://github.com/wfxr/forgit">forgit</a>:交互式 git 命令增强</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/wfxr/forgit.git <span class="hljs-variable">$&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;</span>/plugins/forgit<br></code></pre></td></tr></table></figure>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://github.com/marlonrichert/zsh-autocomplete">zsh-autocomplete</a>:输入时实时显示补全建议</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">git <span class="hljs-built_in">clone</span> https://github.com/marlonrichert/zsh-autocomplete.git <span class="hljs-variable">$&#123;ZSH_CUSTOM:-~/.oh-my-zsh/custom&#125;</span>/plugins/zsh-autocomplete<br></code></pre></td></tr></table></figure></li>
 </ul>
-<p>下载完成后，编辑 <code>~/.zshrc</code> 修改插件配置，在 <code>plugins数组</code> 后添加对应的插件名称：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">plugins=(git <span class="hljs-built_in">sudo</span> docker docker-compose kubectl ubuntu forgit zsh-autocomplete)<br></code></pre></td></tr></table></figure>
+<h3 id="2-2-重启-Docker-服务"><a href="#2-2-重启-Docker-服务" class="headerlink" title="2.2 重启 Docker 服务"></a>2.2 重启 Docker 服务</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl daemon-reload<br><span class="hljs-built_in">sudo</span> systemctl restart docker<br></code></pre></td></tr></table></figure>
 
-<h3 id="4-插件优化技巧"><a href="#4-插件优化技巧" class="headerlink" title="4.插件优化技巧"></a>4.插件优化技巧</h3><p>性能优化配置（ <code>.zshrc</code> 中添加）</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 按需加载插件（减少启动时间）</span><br><span class="hljs-built_in">zstyle</span> <span class="hljs-string">&#x27;:omz:plugins&#x27;</span> lazy-load <span class="hljs-built_in">yes</span><br><br><span class="hljs-comment"># 指定延迟加载的插件</span><br><span class="hljs-built_in">zstyle</span> <span class="hljs-string">&#x27;:omz:plugins:lazy&#x27;</span> aliases git docker<br></code></pre></td></tr></table></figure>
+<h2 id="3-Docker-常用命令"><a href="#3-Docker-常用命令" class="headerlink" title="3. Docker 常用命令"></a>3. Docker 常用命令</h2><h3 id="3-1-Docker-常用命令速查表"><a href="#3-1-Docker-常用命令速查表" class="headerlink" title="3.1 Docker 常用命令速查表"></a>3.1 Docker 常用命令速查表</h3><h4 id="3-1-1-容器管理"><a href="#3-1-1-容器管理" class="headerlink" title="3.1.1 容器管理"></a>3.1.1 容器管理</h4><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>docker run -it --name my_container image:tag</code></td>
+<td>创建并运行容器（交互式）</td>
+</tr>
+<tr>
+<td><code>docker run -d --name my_container image:tag</code></td>
+<td>后台运行容器</td>
+</tr>
+<tr>
+<td><code>docker start/stop/restart my_container</code></td>
+<td>启动&#x2F;停止&#x2F;重启容器</td>
+</tr>
+<tr>
+<td><code>docker exec -it my_container /bin/bash</code></td>
+<td>进入运行中的容器</td>
+</tr>
+<tr>
+<td><code>docker rm my_container</code></td>
+<td>删除容器</td>
+</tr>
+<tr>
+<td><code>docker rm -f my_container</code></td>
+<td>强制删除运行中的容器</td>
+</tr>
+<tr>
+<td><code>docker ps</code></td>
+<td>查看运行中的容器</td>
+</tr>
+<tr>
+<td><code>docker ps -a</code></td>
+<td>查看所有容器（包括已停止的）</td>
+</tr>
+<tr>
+<td><code>docker logs my_container</code></td>
+<td>查看容器日志</td>
+</tr>
+<tr>
+<td><code>docker logs -f my_container</code></td>
+<td>实时查看日志（类似 <code>tail -f</code>）</td>
+</tr>
+</tbody></table>
+<h4 id="3-1-2-镜像管理"><a href="#3-1-2-镜像管理" class="headerlink" title="3.1.2 镜像管理"></a>3.1.2 镜像管理</h4><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>docker pull image:tag</code></td>
+<td>拉取镜像</td>
+</tr>
+<tr>
+<td><code>docker images</code></td>
+<td>查看本地镜像</td>
+</tr>
+<tr>
+<td><code>docker rmi image:tag</code></td>
+<td>删除镜像</td>
+</tr>
+<tr>
+<td><code>docker build -t my_image:tag .</code></td>
+<td>构建镜像（基于当前目录的 <code>Dockerfile</code>）</td>
+</tr>
+<tr>
+<td><code>docker save -o my_image.tar image:tag</code></td>
+<td>导出镜像为 <code>.tar</code> 文件</td>
+</tr>
+<tr>
+<td><code>docker load -i my_image.tar</code></td>
+<td>从 <code>.tar</code> 文件导入镜像</td>
+</tr>
+</tbody></table>
+<h4 id="3-1-3-网络管理"><a href="#3-1-3-网络管理" class="headerlink" title="3.1.3 网络管理"></a>3.1.3 网络管理</h4><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>docker network ls</code></td>
+<td>查看所有网络</td>
+</tr>
+<tr>
+<td><code>docker network create my_network</code></td>
+<td>创建自定义网络</td>
+</tr>
+<tr>
+<td><code>docker network inspect my_network</code></td>
+<td>查看网络详情</td>
+</tr>
+<tr>
+<td><code>docker run --network=my_network ...</code></td>
+<td>指定容器使用的网络</td>
+</tr>
+</tbody></table>
+<h4 id="3-1-4-数据卷管理"><a href="#3-1-4-数据卷管理" class="headerlink" title="3.1.4 数据卷管理"></a>3.1.4 数据卷管理</h4><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>docker volume ls</code></td>
+<td>查看所有数据卷</td>
+</tr>
+<tr>
+<td><code>docker volume create my_volume</code></td>
+<td>创建数据卷</td>
+</tr>
+<tr>
+<td><code>docker run -v my_volume:/path/in/container ...</code></td>
+<td>挂载数据卷到容器</td>
+</tr>
+<tr>
+<td><code>docker run -v /host/path:/container/path ...</code></td>
+<td>挂载主机目录到容器</td>
+</tr>
+</tbody></table>
+<h4 id="3-1-5-容器资源管理"><a href="#3-1-5-容器资源管理" class="headerlink" title="3.1.5 容器资源管理"></a>3.1.5 容器资源管理</h4><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>docker stats</code></td>
+<td>查看容器资源占用（CPU&#x2F;内存&#x2F;网络）</td>
+</tr>
+<tr>
+<td><code>docker top my_container</code></td>
+<td>查看容器内的进程</td>
+</tr>
+<tr>
+<td><code>docker update --memory 512M my_container</code></td>
+<td>限制容器内存</td>
+</tr>
+</tbody></table>
+<h4 id="3-1-6-Docker-Compose（容器编排）"><a href="#3-1-6-Docker-Compose（容器编排）" class="headerlink" title="3.1.6 Docker Compose（容器编排）"></a>3.1.6 Docker Compose（容器编排）</h4><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>docker-compose up -d</code></td>
+<td>启动 <code>docker-compose.yml</code> 定义的服务</td>
+</tr>
+<tr>
+<td><code>docker-compose down</code></td>
+<td>停止并删除所有容器</td>
+</tr>
+<tr>
+<td><code>docker-compose logs -f</code></td>
+<td>查看所有服务的日志</td>
+</tr>
+<tr>
+<td><code>docker-compose ps</code></td>
+<td>查看运行中的服务</td>
+</tr>
+</tbody></table>
+<h4 id="3-1-7-清理与维护"><a href="#3-1-7-清理与维护" class="headerlink" title="3.1.7 清理与维护"></a>3.1.7 清理与维护</h4><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>docker system df</code></td>
+<td>查看 Docker 磁盘使用情况</td>
+</tr>
+<tr>
+<td><code>docker system prune</code></td>
+<td>清理未使用的容器&#x2F;镜像&#x2F;网络</td>
+</tr>
+<tr>
+<td><code>docker system prune -a</code></td>
+<td>彻底清理（包括未使用的镜像）</td>
+</tr>
+</tbody></table>
+<h3 id="3-2-常用组合命令"><a href="#3-2-常用组合命令" class="headerlink" title="3.2 常用组合命令"></a>3.2 常用组合命令</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 删除所有停止的容器</span><br>docker container prune<br><br><span class="hljs-comment"># 删除所有未使用的镜像</span><br>docker image prune -a<br><br><span class="hljs-comment"># 查看容器 IP 地址</span><br>docker inspect -f <span class="hljs-string">&#x27;&#123;&#123;range .NetworkSettings.Networks&#125;&#125;&#123;&#123;.IPAddress&#125;&#125;&#123;&#123;end&#125;&#125;&#x27;</span> my_container<br><br><span class="hljs-comment"># 批量停止所有容器</span><br>docker stop $(docker ps -aq)<br><br><span class="hljs-comment"># 批量删除所有容器</span><br>docker <span class="hljs-built_in">rm</span> $(docker ps -aq)<br></code></pre></td></tr></table></figure>
 
-<h2 id="五、其他优化技巧"><a href="#五、其他优化技巧" class="headerlink" title="五、其他优化技巧"></a>五、其他优化技巧</h2><h3 id="1-历史命令优化"><a href="#1-历史命令优化" class="headerlink" title="1. 历史命令优化"></a>1. 历史命令优化</h3><p>在 <code>~/.zshrc</code> 中添加：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">HISTFILE=~/.zsh_history<br>HISTSIZE=10000<br>SAVEHIST=10000<br><span class="hljs-built_in">setopt</span> appendhistory<br><span class="hljs-built_in">setopt</span> share_history<br><span class="hljs-built_in">setopt</span> hist_ignore_all_dups<br></code></pre></td></tr></table></figure>
+<h3 id="3-3-常见问题"><a href="#3-3-常见问题" class="headerlink" title="3.3 常见问题"></a>3.3 常见问题</h3><h4 id="3-3-1-如何修改容器配置？"><a href="#3-3-1-如何修改容器配置？" class="headerlink" title="3.3.1 如何修改容器配置？"></a>3.3.1 如何修改容器配置？</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 修改容器配置（如端口映射）</span><br>docker update --restart=always my_container<br>docker update --publish-add 8080:80 my_container<br></code></pre></td></tr></table></figure>
 
-<h3 id="2-别名设置"><a href="#2-别名设置" class="headerlink" title="2. 别名设置"></a>2. 别名设置</h3><p>在 <code>~/.zshrc</code> 中添加常用别名：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">alias</span> ll=<span class="hljs-string">&#x27;ls -alF&#x27;</span><br><span class="hljs-built_in">alias</span> la=<span class="hljs-string">&#x27;ls -A&#x27;</span><br><span class="hljs-built_in">alias</span> l=<span class="hljs-string">&#x27;ls -CF&#x27;</span><br><span class="hljs-built_in">alias</span> update=<span class="hljs-string">&#x27;sudo apt update &amp;&amp; sudo apt upgrade -y&#x27;</span><br><span class="hljs-built_in">alias</span> cls=<span class="hljs-string">&#x27;clear&#x27;</span><br></code></pre></td></tr></table></figure>
+<h4 id="3-3-2-如何查看容器占用的端口？"><a href="#3-3-2-如何查看容器占用的端口？" class="headerlink" title="3.3.2 如何查看容器占用的端口？"></a>3.3.2 如何查看容器占用的端口？</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker port my_container<br></code></pre></td></tr></table></figure>
 
-<h3 id="3-启用颜色支持"><a href="#3-启用颜色支持" class="headerlink" title="3. 启用颜色支持"></a>3. 启用颜色支持</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;export CLICOLOR=1&#x27;</span> &gt;&gt; ~/.zshrc<br><span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;export LS_COLORS=&quot;di=34:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43&quot;&#x27;</span> &gt;&gt; ~/.zshrc<br></code></pre></td></tr></table></figure>
-
-<h2 id="六、最终生效"><a href="#六、最终生效" class="headerlink" title="六、最终生效"></a>六、最终生效</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">source</span> ~/.zshrc<br></code></pre></td></tr></table></figure>
-
-<h2 id="七、恢复-bash"><a href="#七、恢复-bash" class="headerlink" title="七、恢复 bash"></a>七、恢复 bash</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 如果需要切换回bash为默认终端</span><br>chsh -s $(<span class="hljs-built_in">which</span> bash)<br><span class="hljs-comment"># 如果临时切换回bash</span><br>bash<br></code></pre></td></tr></table></figure>
-
-<h2 id="八、注意事项"><a href="#八、注意事项" class="headerlink" title="八、注意事项"></a>八、注意事项</h2><ul>
-<li>插件太多可能会影响启动速度，建议按需安装</li>
-<li>主题建议先选择自己喜欢的风格再安装</li>
-<li>对于 <a target="_blank" rel="noopener" href="https://github.com/romkatv/powerlevel10k.git">Powerlevel10k</a> 主题，使用<code>p10k configure</code>随时进行风格更换</li>
-</ul>
+<h4 id="3-3-3-如何查看-Docker-版本？"><a href="#3-3-3-如何查看-Docker-版本？" class="headerlink" title="3.3.3 如何查看 Docker 版本？"></a>3.3.3 如何查看 Docker 版本？</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker --version<br>docker info<br></code></pre></td></tr></table></figure>
 
                 
               </div>
@@ -607,7 +756,7 @@
   
     <span>></span>
     
-  <a href="/echo-silence/categories/os/ubuntu/" class="category-chain-item">ubuntu</a>
+  <a href="/echo-silence/categories/os/tool/" class="category-chain-item">tool</a>
   
   
 
@@ -624,11 +773,9 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/echo-silence/tags/%E7%BE%8E%E5%8C%96/" class="print-no-link">#美化</a>
+        <a href="/echo-silence/tags/%E5%B7%A5%E5%85%B7/" class="print-no-link">#工具</a>
       
-        <a href="/echo-silence/tags/Zsh/" class="print-no-link">#Zsh</a>
-      
-        <a href="/echo-silence/tags/%E6%8F%92%E4%BB%B6/" class="print-no-link">#插件</a>
+        <a href="/echo-silence/tags/Docker/" class="print-no-link">#Docker</a>
       
     </div>
   
@@ -640,8 +787,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>让Ubuntu终端效率翻倍！Zsh配置+高颜值主题+实用插件指南</div>
-      <div>https://silence4allen.github.io/echo-silence/posts/894a47dd.html</div>
+      <div>Ubuntu 24.04 完整Docker安装指南：从零配置到实战命令大全</div>
+      <div>https://silence4allen.github.io/echo-silence/posts/b5a0661a.html</div>
     </div>
     <div class="license-meta">
       
@@ -653,7 +800,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2025年5月12日</div>
+          <div>2025年5月16日</div>
         </div>
       
       
@@ -697,18 +844,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/echo-silence/posts/8832b323.html" title="解决Ubuntu24.04中Conda补全问题：Bash/Zsh双终端配置指南">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">解决Ubuntu24.04中Conda补全问题：Bash/Zsh双终端配置指南</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/echo-silence/posts/1c1e6954.html" title="Ubuntu终极美化指南：GRUB定制+GNOME主题+必备插件推荐">
-                        <span class="hidden-mobile">Ubuntu终极美化指南：GRUB定制+GNOME主题+必备插件推荐</span>
+                      <a href="/echo-silence/posts/9e4c4811.html" title="告别ModuleNotFoundError！VSCode中Python项目正确设置源码根目录的4种方法">
+                        <span class="hidden-mobile">告别ModuleNotFoundError！VSCode中Python项目正确设置源码根目录的4种方法</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

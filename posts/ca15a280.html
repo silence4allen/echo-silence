@@ -1,0 +1,966 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/echo-silence/custom/img/favicon/books_vertical.png">
+  <link rel="icon" href="/echo-silence/custom/img/favicon/books_vertical.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="极客奶爸">
+  <meta name="keywords" content="Python|AI|游戏|生活">
+  
+    <meta name="description" content="本文介绍了如何将自定义的 shell 函数注册到 ~&#x2F;.bashrc 和 ~&#x2F;.zshrc 文件中，以便在终端中方便使用。首先，创建一个目录~&#x2F;.config&#x2F;shell_functions 来存放所有的 shell 函数文件。接着，通过编写一个函数加载器function_loader.sh，自动加载该目录下的所有函数，并将其注册到 shell配置文件中。加载器会动态发现所有可用的函数，并为每个函">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Shell函数自动加载器开发指南：Bash、Zsh双终端支持+延迟加载实现">
+<meta property="og:url" content="https://silence4allen.github.io/echo-silence/posts/ca15a280.html">
+<meta property="og:site_name" content="静夜思·Code">
+<meta property="og:description" content="本文介绍了如何将自定义的 shell 函数注册到 ~&#x2F;.bashrc 和 ~&#x2F;.zshrc 文件中，以便在终端中方便使用。首先，创建一个目录~&#x2F;.config&#x2F;shell_functions 来存放所有的 shell 函数文件。接着，通过编写一个函数加载器function_loader.sh，自动加载该目录下的所有函数，并将其注册到 shell配置文件中。加载器会动态发现所有可用的函数，并为每个函">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://silence4allen.github.io/echo-silence/custom/img/cover/shell.png">
+<meta property="article:published_time" content="2025-04-19T02:00:00.000Z">
+<meta property="article:modified_time" content="2025-05-16T10:34:31.666Z">
+<meta property="article:author" content="极客奶爸">
+<meta property="article:tag" content="工具">
+<meta property="article:tag" content="Shell">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://silence4allen.github.io/echo-silence/custom/img/cover/shell.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+    <meta name="key" content="value">
+  
+  <title>Shell函数自动加载器开发指南：Bash、Zsh双终端支持+延迟加载实现 - 静夜思·Code</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/echo-silence/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/echo-silence/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/echo-silence/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"silence4allen.github.io","root":"/echo-silence/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":""},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":"0534a0b9497b0eff0ed92f89657cff6d","google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/echo-silence/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/echo-silence/js/utils.js" ></script>
+  <script  src="/echo-silence/js/color-schema.js" ></script>
+  
+
+  
+    <!-- Baidu Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?0534a0b9497b0eff0ed92f89657cff6d";
+          var s = document.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(hm, s);
+        })();
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/echo-silence/">
+      <strong>静夜思·Code</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/echo-silence/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" target="_self" href="javascript:;" role="button"
+                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="iconfont icon-books"></i>
+                <span>文章</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/echo-silence/archives/" target="_self">
+                    <i class="iconfont icon-archive-fill"></i>
+                    <span>归档</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/echo-silence/categories/" target="_self">
+                    <i class="iconfont icon-category-fill"></i>
+                    <span>分类</span>
+                  </a>
+                
+                  
+                  
+                  
+                  <a class="dropdown-item" href="/echo-silence/tags/" target="_self">
+                    <i class="iconfont icon-tags-fill"></i>
+                    <span>标签</span>
+                  </a>
+                
+              </div>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/echo-silence/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/echo-silence/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/echo-silence/custom/img/bg/roof.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Shell函数自动加载器开发指南：Bash、Zsh双终端支持+延迟加载实现"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-04-19 10:00" pubdate>
+          2025年4月19日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          16 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-right: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="os"
+        id="heading-dd302f94682dbd2a114d63b0433602e0" role="tab" data-toggle="collapse" href="#collapse-dd302f94682dbd2a114d63b0433602e0"
+        aria-expanded="true"
+      >
+        os
+        <span class="list-group-count">(10)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-dd302f94682dbd2a114d63b0433602e0"
+           role="tabpanel" aria-labelledby="heading-dd302f94682dbd2a114d63b0433602e0">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/echo-silence/posts/1ee04425.html" title="双系统问题整理"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">双系统问题整理</span>
+        </a>
+      
+    
+      
+      
+        <a href="/echo-silence/posts/fc3226a0.html" title="Win11+Ubuntu双系统彻底卸载指南：100%清理分区与GRUB引导项"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Win11+Ubuntu双系统彻底卸载指南：100%清理分区与GRUB引导项</span>
+        </a>
+      
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="tool"
+        id="heading-39ab32c5aeb56c9f5ae17f073ce31023" role="tab" data-toggle="collapse" href="#collapse-39ab32c5aeb56c9f5ae17f073ce31023"
+        aria-expanded="true"
+      >
+        tool
+        <span class="list-group-count">(4)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-39ab32c5aeb56c9f5ae17f073ce31023"
+           role="tabpanel" aria-labelledby="heading-39ab32c5aeb56c9f5ae17f073ce31023">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/echo-silence/posts/b5a0661a.html" title="Ubuntu 24.04 完整Docker安装指南：从零配置到实战命令大全"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Ubuntu 24.04 完整Docker安装指南：从零配置到实战命令大全</span>
+        </a>
+      
+    
+      
+      
+        <a href="/echo-silence/posts/9e4c4811.html" title="告别ModuleNotFoundError！VSCode中Python项目正确设置源码根目录的4种方法"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">告别ModuleNotFoundError！VSCode中Python项目正确设置源码根目录的4种方法</span>
+        </a>
+      
+    
+      
+      
+        <a href="/echo-silence/posts/2de36300.html" title="PyCharm代理配置全攻略：系统设置+Python运行环境一键搞定"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">PyCharm代理配置全攻略：系统设置+Python运行环境一键搞定</span>
+        </a>
+      
+    
+      
+      
+        <a href="/echo-silence/posts/ca15a280.html" title="Shell函数自动加载器开发指南：Bash、Zsh双终端支持+延迟加载实现"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">Shell函数自动加载器开发指南：Bash、Zsh双终端支持+延迟加载实现</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="ubuntu"
+        id="heading-1d41c853af58d3a7ae54990ce29417d8" role="tab" data-toggle="collapse" href="#collapse-1d41c853af58d3a7ae54990ce29417d8"
+        aria-expanded="false"
+      >
+        ubuntu
+        <span class="list-group-count">(4)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-1d41c853af58d3a7ae54990ce29417d8"
+           role="tabpanel" aria-labelledby="heading-1d41c853af58d3a7ae54990ce29417d8">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/echo-silence/posts/8832b323.html" title="解决Ubuntu24.04中Conda补全问题：Bash/Zsh双终端配置指南"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">解决Ubuntu24.04中Conda补全问题：Bash/Zsh双终端配置指南</span>
+        </a>
+      
+    
+      
+      
+        <a href="/echo-silence/posts/894a47dd.html" title="让Ubuntu终端效率翻倍！Zsh配置+高颜值主题+实用插件指南"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">让Ubuntu终端效率翻倍！Zsh配置+高颜值主题+实用插件指南</span>
+        </a>
+      
+    
+      
+      
+        <a href="/echo-silence/posts/1c1e6954.html" title="Ubuntu终极美化指南：GRUB定制+GNOME主题+必备插件推荐"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Ubuntu终极美化指南：GRUB定制+GNOME主题+必备插件推荐</span>
+        </a>
+      
+    
+      
+      
+        <a href="/echo-silence/posts/7d6af4c4.html" title="Ubuntu24.04保姆级装机指南：避坑搜狗输入法+GNOME插件推荐+高效下载工具全攻略"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Ubuntu24.04保姆级装机指南：避坑搜狗输入法+GNOME插件推荐+高效下载工具全攻略</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Shell函数自动加载器开发指南：Bash、Zsh双终端支持+延迟加载实现</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><blockquote>
+<p>获取<code>~/.config/shell_functions</code>目录下的所有 shell 文件中的函数，将函数注册到<code>~/.bashrc</code>和<code>~/.zshrc</code>文件，方便终端使用</p>
+</blockquote>
+<h2 id="一、创建-shell-函数目录"><a href="#一、创建-shell-函数目录" class="headerlink" title="一、创建 shell 函数目录"></a>一、创建 shell 函数目录</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">mkdir</span> -p ~/.config/shell_functions<br></code></pre></td></tr></table></figure>
+
+<h2 id="二、添加功能函数"><a href="#二、添加功能函数" class="headerlink" title="二、添加功能函数"></a>二、添加功能函数</h2><h3 id="1-添加函数加载器"><a href="#1-添加函数加载器" class="headerlink" title="1. 添加函数加载器"></a>1. 添加函数加载器</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cat</span> &gt; ~/.config/shell_functions/function_loader.sh &lt;&lt;<span class="hljs-string">&#x27;EOF&#x27;</span><br><span class="hljs-comment">#!/bin/bash</span><br><br><span class="hljs-comment"># ====================== 函数自动加载器 ======================</span><br><span class="hljs-comment"># 文件位置: ~/.config/shell_functions/function_loader.sh</span><br><br><span class="hljs-comment"># 颜色定义</span><br>COLOR_RED=<span class="hljs-string">&#x27;\033[0;31m&#x27;</span><br>COLOR_GREEN=<span class="hljs-string">&#x27;\033[0;32m&#x27;</span><br>COLOR_YELLOW=<span class="hljs-string">&#x27;\033[0;33m&#x27;</span><br>COLOR_BLUE=<span class="hljs-string">&#x27;\033[0;34m&#x27;</span><br>COLOR_CYAN=<span class="hljs-string">&#x27;\033[0;36m&#x27;</span><br>COLOR_RESET=<span class="hljs-string">&#x27;\033[0m&#x27;</span><br><br><span class="hljs-comment"># 主加载函数</span><br><span class="hljs-function"><span class="hljs-title">__load_shell_function</span></span>() &#123;<br>    <span class="hljs-built_in">local</span> func_name=<span class="hljs-string">&quot;<span class="hljs-variable">$1</span>&quot;</span><br>    <span class="hljs-built_in">local</span> loaded_files=()<br><br>    <span class="hljs-keyword">for</span> func_file <span class="hljs-keyword">in</span> ~/.config/shell_functions/*.sh; <span class="hljs-keyword">do</span><br>        [[ <span class="hljs-string">&quot;<span class="hljs-variable">$func_file</span>&quot;</span> == *<span class="hljs-string">&quot;function_loader.sh&quot;</span> ]] &amp;&amp; <span class="hljs-built_in">continue</span><br><br>        <span class="hljs-keyword">if</span> [[ -f <span class="hljs-string">&quot;<span class="hljs-variable">$func_file</span>&quot;</span> ]]; <span class="hljs-keyword">then</span><br>            <span class="hljs-keyword">if</span> grep -q -E <span class="hljs-string">&quot;^(function[[:space:]]+)?<span class="hljs-variable">$&#123;func_name&#125;</span>[[:space:]]*[(&#123;]&quot;</span> <span class="hljs-string">&quot;<span class="hljs-variable">$func_file</span>&quot;</span>; <span class="hljs-keyword">then</span><br>                <span class="hljs-keyword">if</span> [[ ! <span class="hljs-string">&quot; <span class="hljs-variable">$&#123;loaded_files[*]&#125;</span> &quot;</span> =~ <span class="hljs-string">&quot; <span class="hljs-variable">$&#123;func_file&#125;</span> &quot;</span> ]]; <span class="hljs-keyword">then</span><br>                    <span class="hljs-built_in">source</span> <span class="hljs-string">&quot;<span class="hljs-variable">$func_file</span>&quot;</span><br>                    loaded_files+=(<span class="hljs-string">&quot;<span class="hljs-variable">$func_file</span>&quot;</span>)<br>                <span class="hljs-keyword">fi</span><br>                <span class="hljs-built_in">return</span> 0<br>            <span class="hljs-keyword">fi</span><br>        <span class="hljs-keyword">fi</span><br>    <span class="hljs-keyword">done</span><br>    <span class="hljs-keyword">if</span> [ -z <span class="hljs-string">&quot;<span class="hljs-variable">$ZSH_VERSION</span>&quot;</span> ]; <span class="hljs-keyword">then</span><br>        <span class="hljs-comment"># 如果没有找到函数实现，输出错误信息</span><br>        <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;COLOR_RED&#125;</span>错误: 未找到函数 <span class="hljs-variable">$&#123;func_name&#125;</span> 的实现<span class="hljs-variable">$&#123;COLOR_RESET&#125;</span>&quot;</span> &gt;&amp;2<br>    <span class="hljs-keyword">fi</span><br>    <span class="hljs-built_in">return</span> 1<br>&#125;<br><br><span class="hljs-comment"># 安全提取函数名</span><br><span class="hljs-function"><span class="hljs-title">__extract_function_name</span></span>() &#123;<br>    <span class="hljs-built_in">local</span> line=<span class="hljs-string">&quot;<span class="hljs-variable">$1</span>&quot;</span><br>    <span class="hljs-comment"># 严格匹配函数定义行</span><br>    <span class="hljs-keyword">if</span> [ -n <span class="hljs-string">&quot;<span class="hljs-variable">$ZSH_VERSION</span>&quot;</span> ]; <span class="hljs-keyword">then</span><br>        <span class="hljs-keyword">if</span> [[ <span class="hljs-string">&quot;<span class="hljs-variable">$line</span>&quot;</span> =~ <span class="hljs-string">&quot;^[[:space:]]*(function[[:space:]]+)?([a-zA-Z_][a-zA-Z0-9_]*)[[:space:]]*[\(\&#123;]&quot;</span> ]]; <span class="hljs-keyword">then</span><br>            <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;match[2]&#125;</span>&quot;</span><br>        <span class="hljs-keyword">fi</span><br>    <span class="hljs-keyword">else</span><br>        <span class="hljs-keyword">if</span> [[ <span class="hljs-string">&quot;<span class="hljs-variable">$line</span>&quot;</span> =~ ^[[:space:]]*(<span class="hljs-keyword">function</span>[[:space:]]+)?([a-zA-Z_][a-zA-Z0-9_]*)[[:space:]]*[\(\&#123;] ]]; <span class="hljs-keyword">then</span><br>            <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;BASH_REMATCH[2]&#125;</span>&quot;</span><br>        <span class="hljs-keyword">fi</span><br>    <span class="hljs-keyword">fi</span><br>&#125;<br><br><span class="hljs-comment"># 动态发现所有可用函数</span><br><span class="hljs-comment"># 动态发现所有可用函数</span><br><span class="hljs-function"><span class="hljs-title">__discover_shell_functions</span></span>() &#123;<br>    <span class="hljs-comment"># 使用普通数组代替关联数组</span><br>    <span class="hljs-built_in">declare</span> -a FUNC_CATEGORIES<br>    <span class="hljs-built_in">declare</span> -a SHELL_FUNCTIONS=()<br><br>    <span class="hljs-keyword">for</span> func_file <span class="hljs-keyword">in</span> ~/.config/shell_functions/*.sh; <span class="hljs-keyword">do</span><br>        [[ <span class="hljs-string">&quot;<span class="hljs-variable">$func_file</span>&quot;</span> == *<span class="hljs-string">&quot;function_loader.sh&quot;</span> ]] &amp;&amp; <span class="hljs-built_in">continue</span><br><br>        <span class="hljs-keyword">if</span> [[ -f <span class="hljs-string">&quot;<span class="hljs-variable">$func_file</span>&quot;</span> ]]; <span class="hljs-keyword">then</span><br>            <span class="hljs-built_in">local</span> category=$(<span class="hljs-built_in">basename</span> <span class="hljs-string">&quot;<span class="hljs-variable">$func_file</span>&quot;</span> .sh)<br>            <span class="hljs-built_in">local</span> functions_in_file=()<br><br>            <span class="hljs-keyword">while</span> IFS= <span class="hljs-built_in">read</span> -r line; <span class="hljs-keyword">do</span><br>                [[ <span class="hljs-string">&quot;<span class="hljs-variable">$line</span>&quot;</span> =~ ^[[:space:]]*# ]] &amp;&amp; <span class="hljs-built_in">continue</span><br>                [[ -z <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;line//[[:space:]]/&#125;</span>&quot;</span> ]] &amp;&amp; <span class="hljs-built_in">continue</span><br><br>                <span class="hljs-built_in">local</span> func_name=$(__extract_function_name <span class="hljs-string">&quot;<span class="hljs-variable">$line</span>&quot;</span>)<br>                [[ -n <span class="hljs-string">&quot;<span class="hljs-variable">$func_name</span>&quot;</span> ]] &amp;&amp; functions_in_file+=(<span class="hljs-string">&quot;<span class="hljs-variable">$func_name</span>&quot;</span>)<br>            <span class="hljs-keyword">done</span> &lt;<span class="hljs-string">&quot;<span class="hljs-variable">$func_file</span>&quot;</span><br><br>            <span class="hljs-built_in">local</span> public_functions=()<br>            <span class="hljs-keyword">for</span> func <span class="hljs-keyword">in</span> $(<span class="hljs-built_in">printf</span> <span class="hljs-string">&quot;%s\n&quot;</span> <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;functions_in_file[@]&#125;</span>&quot;</span> | <span class="hljs-built_in">sort</span> -u); <span class="hljs-keyword">do</span><br>                [[ <span class="hljs-string">&quot;<span class="hljs-variable">$func</span>&quot;</span> != _* ]] &amp;&amp; public_functions+=(<span class="hljs-string">&quot;<span class="hljs-variable">$func</span>&quot;</span>)<br>            <span class="hljs-keyword">done</span><br><br>            <span class="hljs-keyword">if</span> ((<span class="hljs-variable">$&#123;#public_functions[@]&#125;</span> &gt; <span class="hljs-number">0</span>)); <span class="hljs-keyword">then</span><br>                FUNC_CATEGORIES+=(<span class="hljs-string">&quot;<span class="hljs-variable">$&#123;category&#125;</span>:<span class="hljs-variable">$&#123;public_functions[*]&#125;</span>&quot;</span>)<br>                SHELL_FUNCTIONS+=(<span class="hljs-string">&quot;<span class="hljs-variable">$&#123;public_functions[@]&#125;</span>&quot;</span>)<br>            <span class="hljs-keyword">fi</span><br>        <span class="hljs-keyword">fi</span><br>    <span class="hljs-keyword">done</span><br><br>    <span class="hljs-comment"># 显示分类信息</span><br>    <span class="hljs-keyword">if</span> [ -z <span class="hljs-string">&quot;<span class="hljs-variable">$ZSH_VERSION</span>&quot;</span> ]; <span class="hljs-keyword">then</span><br>        <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;COLOR_BLUE&#125;</span>\n可用命令分类:<span class="hljs-variable">$&#123;COLOR_RESET&#125;</span>&quot;</span> &gt;&amp;2<br>        <span class="hljs-keyword">for</span> entry <span class="hljs-keyword">in</span> <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;FUNC_CATEGORIES[@]&#125;</span>&quot;</span>; <span class="hljs-keyword">do</span><br>            <span class="hljs-built_in">local</span> category=<span class="hljs-string">&quot;<span class="hljs-variable">$&#123;entry%%:*&#125;</span>&quot;</span><br>            <span class="hljs-built_in">local</span> <span class="hljs-built_in">functions</span>=<span class="hljs-string">&quot;<span class="hljs-variable">$&#123;entry#*:&#125;</span>&quot;</span><br>            <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;COLOR_YELLOW&#125;</span><span class="hljs-variable">$&#123;category&#125;</span>:<span class="hljs-variable">$&#123;COLOR_RESET&#125;</span>&quot;</span> &gt;&amp;2<br>            <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;<span class="hljs-variable">$functions</span>&quot;</span> | <span class="hljs-built_in">tr</span> <span class="hljs-string">&#x27; &#x27;</span> <span class="hljs-string">&#x27;\n&#x27;</span> | sed <span class="hljs-string">&#x27;s/^/  /&#x27;</span> &gt;&amp;2<br>        <span class="hljs-keyword">done</span><br>    <span class="hljs-keyword">fi</span><br><br>    <span class="hljs-built_in">printf</span> <span class="hljs-string">&quot;%s\n&quot;</span> <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;SHELL_FUNCTIONS[@]&#125;</span>&quot;</span> | <span class="hljs-built_in">sort</span> -u<br>&#125;<br><br><span class="hljs-comment"># 安全创建函数桩</span><br><span class="hljs-function"><span class="hljs-title">__create_function_stub</span></span>() &#123;<br>    <span class="hljs-built_in">local</span> func=<span class="hljs-string">&quot;<span class="hljs-variable">$1</span>&quot;</span><br><br>    <span class="hljs-comment"># 验证函数名是否有效</span><br>    <span class="hljs-keyword">if</span> [[ <span class="hljs-string">&quot;<span class="hljs-variable">$func</span>&quot;</span> =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]] &amp;&amp; [[ -n <span class="hljs-string">&quot;<span class="hljs-variable">$func</span>&quot;</span> ]]; <span class="hljs-keyword">then</span><br>        <span class="hljs-keyword">if</span> ! <span class="hljs-built_in">declare</span> -f <span class="hljs-string">&quot;<span class="hljs-variable">$func</span>&quot;</span> &gt;/dev/null 2&gt;&amp;1; <span class="hljs-keyword">then</span><br>            <span class="hljs-built_in">eval</span> <span class="hljs-string">&quot;function <span class="hljs-variable">$&#123;func&#125;</span>() &#123; __load_shell_function \&quot;<span class="hljs-variable">$&#123;func&#125;</span>\&quot; &amp;&amp; \&quot;<span class="hljs-variable">$&#123;func&#125;</span>\&quot; \&quot;\$@\&quot;; &#125;&quot;</span><br>        <span class="hljs-keyword">fi</span><br>    <span class="hljs-keyword">else</span><br>        <span class="hljs-keyword">if</span> [ -z <span class="hljs-string">&quot;<span class="hljs-variable">$ZSH_VERSION</span>&quot;</span> ]; <span class="hljs-keyword">then</span><br>            <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;COLOR_RED&#125;</span>警告: 跳过无效函数名 &#x27;<span class="hljs-variable">$&#123;func&#125;</span>&#x27;<span class="hljs-variable">$&#123;COLOR_RESET&#125;</span>&quot;</span> &gt;&amp;2<br>        <span class="hljs-keyword">fi</span><br>    <span class="hljs-keyword">fi</span><br>&#125;<br><br><span class="hljs-comment"># 主初始化过程</span><br><span class="hljs-keyword">function</span> <span class="hljs-function"><span class="hljs-title">__init_function_loader</span></span>() &#123;<br>    <span class="hljs-comment"># 初始化数组</span><br>    <span class="hljs-built_in">local</span> all_functions=()<br><br>    <span class="hljs-comment"># 发现所有函数</span><br>    <span class="hljs-keyword">while</span> IFS= <span class="hljs-built_in">read</span> -r func; <span class="hljs-keyword">do</span><br>        all_functions+=(<span class="hljs-string">&quot;<span class="hljs-variable">$func</span>&quot;</span>)<br>    <span class="hljs-keyword">done</span> &lt; &lt;(__discover_shell_functions)<br><br>    <span class="hljs-comment"># 为每个函数创建桩</span><br>    <span class="hljs-keyword">for</span> func <span class="hljs-keyword">in</span> <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;all_functions[@]&#125;</span>&quot;</span>; <span class="hljs-keyword">do</span><br>        __create_function_stub <span class="hljs-string">&quot;<span class="hljs-variable">$func</span>&quot;</span><br>    <span class="hljs-keyword">done</span><br><br>    <span class="hljs-comment"># 显示统计信息</span><br>    <span class="hljs-keyword">if</span> [ -z <span class="hljs-string">&quot;<span class="hljs-variable">$ZSH_VERSION</span>&quot;</span> ]; <span class="hljs-keyword">then</span><br>        <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;\n<span class="hljs-variable">$&#123;COLOR_GREEN&#125;</span>已注册 <span class="hljs-variable">$&#123;#all_functions[@]&#125;</span> 个延迟加载函数<span class="hljs-variable">$&#123;COLOR_RESET&#125;</span>&quot;</span> &gt;&amp;2<br>        <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;COLOR_CYAN&#125;</span>提示: 首次使用命令时会自动加载相应模块<span class="hljs-variable">$&#123;COLOR_RESET&#125;</span>&quot;</span> &gt;&amp;2<br>    <span class="hljs-keyword">fi</span><br>&#125;<br><br><span class="hljs-comment"># 执行初始化</span><br>__init_function_loader<br><br>EOF<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-添加功能函数"><a href="#2-添加功能函数" class="headerlink" title="2. 添加功能函数"></a>2. 添加功能函数</h3><p>以添加 <code>proxy_utils.sh</code> 为例（该函数功能在于能够便捷地开关代理，<strong>其中的代理端口、测试地址等根据实际情况改写</strong>）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cat</span> &gt; ~/.config/shell_functions/proxy_utils.sh &lt;&lt;<span class="hljs-string">&#x27;EOF&#x27;</span><br><span class="hljs-comment">#!/bin/bash</span><br><br><span class="hljs-comment"># ====================== 代理控制模块 ======================</span><br><span class="hljs-comment"># 颜色定义</span><br>RED=<span class="hljs-string">&#x27;\033[0;31m&#x27;</span><br>GREEN=<span class="hljs-string">&#x27;\033[0;32m&#x27;</span><br>YELLOW=<span class="hljs-string">&#x27;\033[0;33m&#x27;</span><br>BLUE=<span class="hljs-string">&#x27;\033[0;34m&#x27;</span><br>CYAN=<span class="hljs-string">&#x27;\033[0;36m&#x27;</span><br>NC=<span class="hljs-string">&#x27;\033[0m&#x27;</span> <span class="hljs-comment"># No Color</span><br><br><span class="hljs-comment"># 配置区（修改这里适应你的环境）</span><br>PROXY_HOST=<span class="hljs-string">&quot;127.0.0.1&quot;</span><br>HTTP_PORT=<span class="hljs-string">&quot;7897&quot;</span><br>SOCKS_PORT=<span class="hljs-string">&quot;7897&quot;</span><br>NO_PROXY=<span class="hljs-string">&quot;localhost,127.0.0.1,192.168.0.0/16,10.0.0.0/8,.internal,.local&quot;</span><br>TEST_URL=<span class="hljs-string">&quot;https://www.google.com&quot;</span>  <span class="hljs-comment"># 用于测试代理的网站</span><br>DIRECT_TEST_URL=<span class="hljs-string">&quot;https://www.baidu.com&quot;</span>  <span class="hljs-comment"># 用于测试直连的网站</span><br>TIMEOUT=3  <span class="hljs-comment"># 测试超时时间(秒)</span><br><br><span class="hljs-comment"># 网络测试函数</span><br><span class="hljs-function"><span class="hljs-title">_test_connection</span></span>() &#123;<br>    <span class="hljs-built_in">local</span> url=<span class="hljs-variable">$1</span><br>    <span class="hljs-built_in">local</span> proxy_type=<span class="hljs-variable">$2</span><br>    <span class="hljs-built_in">local</span> proxy_addr=<span class="hljs-variable">$3</span><br><br>    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;CYAN&#125;</span>测试连接: <span class="hljs-variable">$url</span> ...<span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br><br>    <span class="hljs-built_in">local</span> start_time=$(<span class="hljs-built_in">date</span> +%s.%N)<br><br>    <span class="hljs-keyword">if</span> [ -z <span class="hljs-string">&quot;<span class="hljs-variable">$proxy_type</span>&quot;</span> ]; <span class="hljs-keyword">then</span><br>        <span class="hljs-comment"># 直连测试</span><br>        <span class="hljs-keyword">if</span> curl -Is <span class="hljs-string">&quot;<span class="hljs-variable">$url</span>&quot;</span> --connect-timeout <span class="hljs-variable">$TIMEOUT</span> &amp;&gt;/dev/null; <span class="hljs-keyword">then</span><br>            <span class="hljs-built_in">local</span> end_time=$(<span class="hljs-built_in">date</span> +%s.%N)<br>            <span class="hljs-built_in">local</span> elapsed=$(<span class="hljs-built_in">printf</span> <span class="hljs-string">&quot;%.2f&quot;</span> $(<span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;<span class="hljs-variable">$end_time</span> - <span class="hljs-variable">$start_time</span>&quot;</span> | bc))<br>            <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;GREEN&#125;</span>✓ 直连成功 (<span class="hljs-variable">$&#123;elapsed&#125;</span>s)<span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br>            <span class="hljs-built_in">return</span> 0<br>        <span class="hljs-keyword">else</span><br>            <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;RED&#125;</span>✗ 直连失败<span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br>            <span class="hljs-built_in">return</span> 1<br>        <span class="hljs-keyword">fi</span><br>    <span class="hljs-keyword">else</span><br>        <span class="hljs-comment"># 代理测试</span><br>        <span class="hljs-keyword">case</span> <span class="hljs-variable">$proxy_type</span> <span class="hljs-keyword">in</span><br>            http)<br>                <span class="hljs-keyword">if</span> curl -Is <span class="hljs-string">&quot;<span class="hljs-variable">$url</span>&quot;</span> --connect-timeout <span class="hljs-variable">$TIMEOUT</span> -x <span class="hljs-string">&quot;<span class="hljs-variable">$proxy_addr</span>&quot;</span> &amp;&gt;/dev/null; <span class="hljs-keyword">then</span><br>                    <span class="hljs-built_in">local</span> end_time=$(<span class="hljs-built_in">date</span> +%s.%N)<br>                    <span class="hljs-built_in">local</span> elapsed=$(<span class="hljs-built_in">printf</span> <span class="hljs-string">&quot;%.2f&quot;</span> $(<span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;<span class="hljs-variable">$end_time</span> - <span class="hljs-variable">$start_time</span>&quot;</span> | bc))<br>                    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;GREEN&#125;</span>✓ HTTP代理成功 (<span class="hljs-variable">$&#123;elapsed&#125;</span>s)<span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br>                    <span class="hljs-built_in">return</span> 0<br>                <span class="hljs-keyword">else</span><br>                    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;RED&#125;</span>✗ HTTP代理失败<span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br>                    <span class="hljs-built_in">return</span> 1<br>                <span class="hljs-keyword">fi</span><br>                ;;<br>            socks5)<br>                <span class="hljs-keyword">if</span> curl -Is <span class="hljs-string">&quot;<span class="hljs-variable">$url</span>&quot;</span> --connect-timeout <span class="hljs-variable">$TIMEOUT</span> --socks5-hostname <span class="hljs-string">&quot;<span class="hljs-variable">$proxy_addr</span>&quot;</span> &amp;&gt;/dev/null; <span class="hljs-keyword">then</span><br>                    <span class="hljs-built_in">local</span> end_time=$(<span class="hljs-built_in">date</span> +%s.%N)<br>                    <span class="hljs-built_in">local</span> elapsed=$(<span class="hljs-built_in">printf</span> <span class="hljs-string">&quot;%.2f&quot;</span> $(<span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;<span class="hljs-variable">$end_time</span> - <span class="hljs-variable">$start_time</span>&quot;</span> | bc))<br>                    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;GREEN&#125;</span>✓ SOCKS5代理成功 (<span class="hljs-variable">$&#123;elapsed&#125;</span>s)<span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br>                    <span class="hljs-built_in">return</span> 0<br>                <span class="hljs-keyword">else</span><br>                    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;RED&#125;</span>✗ SOCKS5代理失败<span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br>                    <span class="hljs-built_in">return</span> 1<br>                <span class="hljs-keyword">fi</span><br>                ;;<br>        <span class="hljs-keyword">esac</span><br>    <span class="hljs-keyword">fi</span><br>&#125;<br><br><span class="hljs-comment"># 状态检测</span><br><span class="hljs-function"><span class="hljs-title">_proxy_status_check</span></span>() &#123;<br>    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;BLUE&#125;</span>====== 代理状态 ======<span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br>    [ -n <span class="hljs-string">&quot;<span class="hljs-variable">$http_proxy</span>&quot;</span> ] &amp;&amp; <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;HTTP 代理: <span class="hljs-variable">$&#123;GREEN&#125;</span>已启用<span class="hljs-variable">$&#123;NC&#125;</span> (<span class="hljs-variable">$http_proxy</span>)&quot;</span> || <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;HTTP 代理: <span class="hljs-variable">$&#123;RED&#125;</span>未启用<span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br>    [ -n <span class="hljs-string">&quot;<span class="hljs-variable">$https_proxy</span>&quot;</span> ] &amp;&amp; <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;HTTPS 代理: <span class="hljs-variable">$&#123;GREEN&#125;</span>已启用<span class="hljs-variable">$&#123;NC&#125;</span> (<span class="hljs-variable">$https_proxy</span>)&quot;</span> || <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;HTTPS 代理: <span class="hljs-variable">$&#123;RED&#125;</span>未启用<span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br>    [ -n <span class="hljs-string">&quot;<span class="hljs-variable">$all_proxy</span>&quot;</span> ] &amp;&amp; <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;SOCKS 代理: <span class="hljs-variable">$&#123;GREEN&#125;</span>已启用<span class="hljs-variable">$&#123;NC&#125;</span> (<span class="hljs-variable">$all_proxy</span>)&quot;</span> || <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;SOCKS 代理: <span class="hljs-variable">$&#123;RED&#125;</span>未启用<span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br>    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;BLUE&#125;</span>=====================<span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br>&#125;<br><br><span class="hljs-comment"># 启用代理</span><br><span class="hljs-function"><span class="hljs-title">proxy_on</span></span>() &#123;<br>    <span class="hljs-built_in">export</span> http_proxy=<span class="hljs-string">&quot;http://<span class="hljs-variable">$&#123;PROXY_HOST&#125;</span>:<span class="hljs-variable">$&#123;HTTP_PORT&#125;</span>&quot;</span><br>    <span class="hljs-built_in">export</span> https_proxy=<span class="hljs-string">&quot;http://<span class="hljs-variable">$&#123;PROXY_HOST&#125;</span>:<span class="hljs-variable">$&#123;HTTP_PORT&#125;</span>&quot;</span><br>    <span class="hljs-built_in">export</span> all_proxy=<span class="hljs-string">&quot;socks5://<span class="hljs-variable">$&#123;PROXY_HOST&#125;</span>:<span class="hljs-variable">$&#123;SOCKS_PORT&#125;</span>&quot;</span><br>    <span class="hljs-built_in">export</span> no_proxy=<span class="hljs-string">&quot;<span class="hljs-variable">$NO_PROXY</span>&quot;</span><br><br>    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;YELLOW&#125;</span>正在启用代理并测试连接...<span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br>    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;HTTP 代理: http://<span class="hljs-variable">$&#123;PROXY_HOST&#125;</span>:<span class="hljs-variable">$&#123;HTTP_PORT&#125;</span>&quot;</span><br>    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;SOCKS5 代理: socks5://<span class="hljs-variable">$&#123;PROXY_HOST&#125;</span>:<span class="hljs-variable">$&#123;SOCKS_PORT&#125;</span>&quot;</span><br><br>    <span class="hljs-comment"># 测试HTTP代理</span><br>    _test_connection <span class="hljs-string">&quot;<span class="hljs-variable">$TEST_URL</span>&quot;</span> <span class="hljs-string">&quot;http&quot;</span> <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;PROXY_HOST&#125;</span>:<span class="hljs-variable">$&#123;HTTP_PORT&#125;</span>&quot;</span><br><br>    <span class="hljs-comment"># 测试SOCKS5代理</span><br>    _test_connection <span class="hljs-string">&quot;<span class="hljs-variable">$TEST_URL</span>&quot;</span> <span class="hljs-string">&quot;socks5&quot;</span> <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;PROXY_HOST&#125;</span>:<span class="hljs-variable">$&#123;SOCKS_PORT&#125;</span>&quot;</span><br><br>    _proxy_status_check<br>&#125;<br><br><span class="hljs-comment"># 禁用代理</span><br><span class="hljs-function"><span class="hljs-title">proxy_off</span></span>() &#123;<br>    <span class="hljs-built_in">unset</span> http_proxy https_proxy all_proxy no_proxy<br><br>    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;YELLOW&#125;</span>正在关闭代理并测试直连...<span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br><br>    <span class="hljs-comment"># 测试直连</span><br>    _test_connection <span class="hljs-string">&quot;<span class="hljs-variable">$DIRECT_TEST_URL</span>&quot;</span> <span class="hljs-string">&quot;&quot;</span><br><br>    _proxy_status_check<br>&#125;<br><br><span class="hljs-comment"># 状态切换</span><br><span class="hljs-function"><span class="hljs-title">proxy_toggle</span></span>() &#123;<br>    <span class="hljs-keyword">if</span> [ -n <span class="hljs-string">&quot;<span class="hljs-variable">$http_proxy</span>&quot;</span> ]; <span class="hljs-keyword">then</span><br>        proxy_off<br>    <span class="hljs-keyword">else</span><br>        proxy_on<br>    <span class="hljs-keyword">fi</span><br>&#125;<br><br><span class="hljs-comment"># 帮助信息</span><br><span class="hljs-function"><span class="hljs-title">proxy_help</span></span>() &#123;<br>    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;YELLOW&#125;</span>代理快捷命令:<span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br>    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;YELLOW&#125;</span>当前配置:<span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br>    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;  代理地址: <span class="hljs-variable">$&#123;CYAN&#125;</span><span class="hljs-variable">$&#123;PROXY_HOST&#125;</span><span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br>    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;  HTTP端口: <span class="hljs-variable">$&#123;CYAN&#125;</span><span class="hljs-variable">$&#123;HTTP_PORT&#125;</span><span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br>    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;  SOCKS端口: <span class="hljs-variable">$&#123;CYAN&#125;</span><span class="hljs-variable">$&#123;SOCKS_PORT&#125;</span><span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br>    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;  测试URL: <span class="hljs-variable">$&#123;CYAN&#125;</span><span class="hljs-variable">$&#123;TEST_URL&#125;</span><span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br>    <span class="hljs-built_in">echo</span> -e <span class="hljs-string">&quot;  直连测试URL: <span class="hljs-variable">$&#123;CYAN&#125;</span><span class="hljs-variable">$&#123;DIRECT_TEST_URL&#125;</span><span class="hljs-variable">$&#123;NC&#125;</span>&quot;</span><br>&#125;<br>EOF<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="三、添加通用配置文件"><a href="#三、添加通用配置文件" class="headerlink" title="三、添加通用配置文件"></a>三、添加通用配置文件</h2><p>可能会同时使用 zsh 或者 bash，所以将配置文件作为通用配置文件进行加载</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 写入通用配置内容</span><br><span class="hljs-built_in">cat</span> &gt; ~/.config/shell_common &lt;&lt;<span class="hljs-string">&#x27;EOF&#x27;</span><br><span class="hljs-comment"># ====================== Shell 函数加载 ======================</span><br><span class="hljs-comment"># 加载函数自动加载器</span><br><span class="hljs-keyword">if</span> [ -f ~/.config/shell_functions/function_loader.sh ]; <span class="hljs-keyword">then</span><br>    <span class="hljs-built_in">source</span> ~/.config/shell_functions/function_loader.sh<br><span class="hljs-keyword">fi</span><br><br><span class="hljs-comment"># 禁用危险操作</span><br><span class="hljs-built_in">alias</span> <span class="hljs-built_in">rm</span>=<span class="hljs-string">&#x27;echo &quot;Use trash-put instead!&quot;; false&#x27;</span><br><span class="hljs-built_in">alias</span> <span class="hljs-built_in">rmdir</span>=<span class="hljs-string">&#x27;echo &quot;Protected directory!&quot;; false&#x27;</span><br><br><span class="hljs-comment"># 保留逃生通道</span><br><span class="hljs-built_in">alias</span> real-rm=<span class="hljs-string">&#x27;/bin/rm&#x27;</span><br><span class="hljs-built_in">alias</span> real-rmdir=<span class="hljs-string">&#x27;/bin/rmdir&#x27;</span><br>EOF<br></code></pre></td></tr></table></figure>
+
+<h2 id="四、修改并更新-bashrc文件"><a href="#四、修改并更新-bashrc文件" class="headerlink" title="四、修改并更新~/.bashrc文件"></a>四、修改并更新<code>~/.bashrc</code>文件</h2><h3 id="1-修改bashrc"><a href="#1-修改bashrc" class="headerlink" title="1. 修改bashrc"></a>1. 修改<code>bashrc</code></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cat</span> &gt;&gt; ~/.bashrc &lt;&lt;<span class="hljs-string">&#x27;EOF&#x27;</span><br>[ -f ~/.config/shell_common ] &amp;&amp; <span class="hljs-built_in">source</span> ~/.config/shell_common<br>EOF<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-更新bashrc"><a href="#2-更新bashrc" class="headerlink" title="2. 更新bashrc"></a>2. 更新<code>bashrc</code></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">source</span> ~/.bashrc<br></code></pre></td></tr></table></figure>
+
+<h2 id="五、修改并更新-zshrc文件"><a href="#五、修改并更新-zshrc文件" class="headerlink" title="五、修改并更新~/.zshrc文件"></a>五、修改并更新<code>~/.zshrc</code>文件</h2><h3 id="1-修改zshrc"><a href="#1-修改zshrc" class="headerlink" title="1. 修改zshrc"></a>1. 修改<code>zshrc</code></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cat</span> &gt;&gt; ~/.zshrc &lt;&lt;<span class="hljs-string">&#x27;EOF&#x27;</span><br>[ -f ~/.config/shell_common ] &amp;&amp; <span class="hljs-built_in">source</span> ~/.config/shell_common<br>EOF<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-更新zshrc"><a href="#2-更新zshrc" class="headerlink" title="2. 更新zshrc"></a>2. 更新<code>zshrc</code></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">source</span> ~/.zshrc<br></code></pre></td></tr></table></figure>
+
+<h2 id="六、测试函数"><a href="#六、测试函数" class="headerlink" title="六、测试函数"></a>六、测试函数</h2><p>在 bash 终端和 zsh 终端分别执行以下命令测试：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 开启代理</span><br>proxy_on<br><span class="hljs-comment"># 关闭代理</span><br>proxy_off<br><span class="hljs-comment"># 切换代理状态</span><br>proxy_toggle<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/echo-silence/categories/os/" class="category-chain-item">os</a>
+  
+  
+    <span>></span>
+    
+  <a href="/echo-silence/categories/os/tool/" class="category-chain-item">tool</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/echo-silence/tags/%E5%B7%A5%E5%85%B7/" class="print-no-link">#工具</a>
+      
+        <a href="/echo-silence/tags/Shell/" class="print-no-link">#Shell</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Shell函数自动加载器开发指南：Bash、Zsh双终端支持+延迟加载实现</div>
+      <div>https://silence4allen.github.io/echo-silence/posts/ca15a280.html</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>极客奶爸</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年4月19日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="NC - 非商业性使用">
+                    <i class="iconfont icon-cc-nc"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="ND - 禁止演绎">
+                    <i class="iconfont icon-cc-nd"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/echo-silence/posts/2de36300.html" title="PyCharm代理配置全攻略：系统设置+Python运行环境一键搞定">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">PyCharm代理配置全攻略：系统设置+Python运行环境一键搞定</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/echo-silence/posts/7d6af4c4.html" title="Ubuntu24.04保姆级装机指南：避坑搜狗输入法+GNOME插件推荐+高效下载工具全攻略">
+                        <span class="hidden-mobile">Ubuntu24.04保姆级装机指南：避坑搜狗输入法+GNOME插件推荐+高效下载工具全攻略</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+      <div class="col-lg-7 mx-auto nopadding-x-md">
+        <div class="container custom mx-auto">
+          <link rel="stylesheet" href="//at.alicdn.com/t/font_1067060_qzomjdt8bmp.css">
+        </div>
+      </div>
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/echo-silence/js/events.js" ></script>
+<script  src="/echo-silence/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/echo-silence/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/echo-silence/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/echo-silence/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
